@@ -1,0 +1,10 @@
+[Unit]
+Description=Indigo server
+
+[Service]
+User=indigo
+PAMName=login
+ExecStart=/usr/bin/indigo_server
+
+[Install]
+WantedBy=multi-user.target
