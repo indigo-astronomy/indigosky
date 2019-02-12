@@ -8,7 +8,7 @@ and  execute in the cloned *pi-gen* repository the command
 ```
 ./build-docker.sh
 ```
-The created imaged is named _*-indigo-lite.zip_ in directory _deploy_ and contains the following customization:
+The created image is named _*-indigo-lite.zip_ in directory _deploy_ and contains the following customization:
 
 0. Filesystem is expanded.
 1. User 'indigo' with password 'indigo' is created.
