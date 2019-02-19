@@ -2,13 +2,13 @@
 
 cat >> "${ROOTFS_DIR}/etc/dhcpcd.conf" <<EOL
 interface wlan0
-static ip_address=192.168.3.1/24
+static ip_address=192.168.235.1/24
 nohook wpa_supplicant
 EOL
 
 cat > "${ROOTFS_DIR}/etc/dnsmasq.conf" <<EOL
 interface=wlan0
-dhcp-range=192.168.3.2,192.168.3.20,255.255.255.0,24h
+dhcp-range=192.168.235.2,192.168.235.20,255.255.255.0,24h
 EOL
 
 cat > "${ROOTFS_DIR}/etc/hostapd/hostapd.conf" <<EOL
@@ -40,4 +40,10 @@ EOF
 on_chroot << EOF
 systemctl enable dnsmasq
 systemctl start dnsmasq
+EOF
+
+on_chroot << EOF
+cp ${ROOTFS_DIR}/etc/hostapd/hostapd.conf ${ROOTFS_DIR}/etc/hostapd/hostapd.conf.orig
+cp ${ROOTFS_DIR}/etc/dhcpcd.conf ${ROOTFS_DIR}/etc/dhcpcd.conf.orig
+cp ${ROOTFS_DIR}/etc/wpa_supplicant/wpa_supplicant.conf ${ROOTFS_DIR}/etc/dhcpcd.conf.orig
 EOF
