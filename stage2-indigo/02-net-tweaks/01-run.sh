@@ -41,9 +41,3 @@ on_chroot << EOF
 systemctl enable dnsmasq
 systemctl start dnsmasq
 EOF
-
-on_chroot << EOF
-cp ${ROOTFS_DIR}/etc/hostapd/hostapd.conf ${ROOTFS_DIR}/etc/hostapd/hostapd.conf.orig
-cp ${ROOTFS_DIR}/etc/dhcpcd.conf ${ROOTFS_DIR}/etc/dhcpcd.conf.orig
-cp ${ROOTFS_DIR}/etc/wpa_supplicant/wpa_supplicant.conf ${ROOTFS_DIR}/etc/dhcpcd.conf.orig
-EOF
