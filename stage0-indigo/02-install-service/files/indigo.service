@@ -4,7 +4,7 @@ Description=Indigo server
 [Service]
 User=indigo
 PAMName=login
-ExecStart=/usr/bin/indigo_server
+ExecStart=/usr/bin/indigo_server --enable-wifi-management
 
 [Install]
 WantedBy=multi-user.target
