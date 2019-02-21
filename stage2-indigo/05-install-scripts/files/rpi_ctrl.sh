@@ -29,10 +29,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.11
-
-# Store previous network status of eth0 and wlan0.
-UP_DOWN_TMP_FILE="/tmp/indigo_up_down.txt"
+VERSION=0.12
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
@@ -275,33 +272,23 @@ __get-wifi-client() {
 }
 
 ###############################################
-# Reset WiFi access point settings, that copy
+# Reset WiFi access point settings, by copying
 # all *.conf.orig files to *.conf and restart.
 ###############################################
 __reset-wifi-server() {
 
-    local eth_status=""
-    local wlan_status=""
+    # RPi is in wifi-client mode and cannot connect to Internet via infrastructure access point.
+    if ! grep -Eq "^interface wlan0|^static ip_address=192.168.235.1/24|^nohook wpa_supplicant" ${CONF_DHCPCD}; then
+	# 8.8.8.8 = google-public-dns-a.google.com
+	if ! ping -i 1 -c 1 8.8.8.8; then
+	    # Copy back all orig files and restart in wifi-server mode.
+	    cp "${CONF_HOSTAPD}.orig" "${CONF_HOSTAPD}"
+	    cp "${CONF_WPA_SUPPLICANT}.orig" "${CONF_WPA_SUPPLICANT}"
+	    cp "${CONF_DHCPCD}.orig" "${CONF_DHCPCD}"
 
-    eth_status=$(ip link show | awk '/eth0/{print $9}')
-    wlan_status=$(ip link show | awk '/wlan0/{print $9}')
-
-    if [[ -f ${UP_DOWN_TMP_FILE} ]]; then
-	# TODO: Is that a valid criterion?
-	if grep -q "DOWN DOWN" ${UP_DOWN_TMP_FILE}; then
-	    # RPi is in wifi-client mode and cannot connect to infrastructure access point.
-	    if ! grep -Eq "^interface wlan0|^static ip_address=192.168.235.1/24|^nohook wpa_supplicant" ${CONF_DHCPCD}; then
-		# Copy back all orig files and restart in wifi-server mode.
-		cp "${CONF_HOSTAPD}.orig" "${CONF_HOSTAPD}"
-		cp "${CONF_WPA_SUPPLICANT}.orig" "${CONF_WPA_SUPPLICANT}"
-		cp "${CONF_DHCPCD}.orig" "${CONF_DHCPCD}"
-
-		${REBOOT_EXE}
-	    fi
+	    ${REBOOT_EXE}
 	fi
     fi
-	
-    echo -e "${eth_status} ${wlan_status}" > ${UP_DOWN_TMP_FILE}
 }
 
 ###############################################
