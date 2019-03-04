@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+install -m 644 files/hostname "${ROOTFS_DIR}/etc/hostname"
+install -m 644 files/hosts "${ROOTFS_DIR}/etc/hosts"
+
 cat >> "${ROOTFS_DIR}/etc/dhcpcd.conf" <<EOL
 interface wlan0
 static ip_address=192.168.235.1/24
