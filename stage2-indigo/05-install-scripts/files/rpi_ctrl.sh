@@ -332,7 +332,7 @@ __reset-wifi-server() {
 __list-available-versions() {
 
     echo $(${APT_CACHE_EXE} policy indigo | ${GREP_EXE} -oPm1 "(?<=Installed:\s).*") \
-	 $(${APT_CACHE_EXE} policy indigo | ${GREP_EXE} -E -oe '\s\s[0-9]+.[0-9]+\-[0-9]+' | tr -d '[:blank:]')
+	 $(${APT_CACHE_EXE} policy indigo | ${GREP_EXE} -E -oe '\s\s[0-9]+.[0-9]+\-[0-9]+' | tr -d '[:blank:]' | head -n 2)
 }
 
 ###############################################
@@ -344,9 +344,7 @@ __install-version() {
     ${APT_GET_EXE} install -y --allow-downgrades indigo=${1} >/dev/null 2>&1
     [[ $? -ne 0 ]] && { __ALERT "cannot install indigo version ${1}"; }
 
-    __OK
-
-    ${REBOOT_EXE}
+    { echo "OK"; sleep 2; ${REBOOT_EXE}; }
 }
 
 ###############################################
