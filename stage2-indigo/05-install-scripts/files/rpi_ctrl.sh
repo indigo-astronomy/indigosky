@@ -66,11 +66,11 @@ OPT_LIST_AVAIL_VERSIONS=0
 # Install certain indigo version.
 OPT_INSTALL_VERSION=""
 
-# Get host date.
-OPT_GET_HOST_DATE=0
+# Get date.
+OPT_GET_DATE=0
 
-# Set host date.
-OPT_SET_HOST_DATE=""
+# Set date.
+OPT_SET_DATE=""
 
 # Poweroff.
 OPT_POWEROFF=0
@@ -115,8 +115,8 @@ __usage() {
 	 "\t--reset-wifi-server\n" \
 	 "\t--list-available-versions\n" \
 	 "\t--install-version <package-version>\n" \
-	 "\t--get-host-date\n" \
-	 "\t--set-host-date <+%Y-%m-%dT%H:%M:%S%z>\n" \
+	 "\t--get-date\n" \
+	 "\t--set-date <+%Y-%m-%dT%H:%M:%S%z>\n" \
 	 "\t--poweroff\n" \
 	 "\t--reboot\n" \
 	 "\t--verbose"
@@ -358,7 +358,7 @@ __install-version() {
 ###############################################
 # Get date in format "+%Y-%m-%dT%H:%M:%S%z"
 ###############################################
-__get-host-date() {
+__get-date() {
 
     { echo $(date "+%Y-%m-%dT%H:%M:%S%z"); exit 0; }
 }
@@ -366,7 +366,7 @@ __get-host-date() {
 ###############################################
 # Set date in format "+%Y-%m-%dT%H:%M:%S%z"
 ###############################################
-__set-host-date() {
+__set-date() {
 
     [[ "$#" -ne 1 ]] && { __ALERT "wrong number of arguments"; }
     ${DATE_EXE} -s "${1}" >/dev/null 2>&1
@@ -414,11 +414,11 @@ do
 	    OPT_INSTALL_VERSION="${2}"
 	    shift
 	    ;;
-	--get-host-date)
-	    OPT_GET_HOST_DATE=1
+	--get-date)
+	    OPT_GET_DATE=1
 	    ;;
-	--set-host-date)
-	    OPT_SET_HOST_DATE="${2}"
+	--set-date)
+	    OPT_SET_DATE="${2}"
 	    shift
 	    ;;
 	--poweroff)
@@ -465,7 +465,7 @@ __create_reset_files
 [[ ${OPT_WIFI_AP_RESET} -eq 1 ]] && { __reset-wifi-server; }
 [[ ${OPT_LIST_AVAIL_VERSIONS} -eq 1 ]] && { __list-available-versions; }
 [[ ! -z ${OPT_INSTALL_VERSION} ]] && { __install-version ${OPT_INSTALL_VERSION}; }
-[[ ${OPT_GET_HOST_DATE} -eq 1 ]] && { __get-host-date; }
-[[ ! -z ${OPT_SET_HOST_DATE} ]] && { __set-host-date ${OPT_SET_HOST_DATE}; }
+[[ ${OPT_GET_DATE} -eq 1 ]] && { __get-date; }
+[[ ! -z ${OPT_SET_DATE} ]] && { __set-date ${OPT_SET_DATE}; }
 [[ ${OPT_POWEROFF} -eq 1 ]] && { ${POWEROFF_EXE}; }
 [[ ${OPT_REBOOT} -eq 1 ]] && { ${REBOOT_EXE}; }
