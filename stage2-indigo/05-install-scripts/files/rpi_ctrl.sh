@@ -46,7 +46,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.14
+VERSION=0.15
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
@@ -64,8 +64,13 @@ OPT_WIFI_CN_GET=0
 OPT_LIST_AVAIL_VERSIONS=0
 
 # Install certain indigo version.
-OPT_INSTALL=0
 OPT_INSTALL_VERSION=""
+
+# Get host date.
+OPT_GET_HOST_DATE=0
+
+# Set host date.
+OPT_SET_HOST_DATE=""
 
 # Poweroff.
 OPT_POWEROFF=0
@@ -96,6 +101,7 @@ SYSTEMCTL_EXE=$(which systemctl)
 HOSTAPD_EXE=$(which hostapd)
 APT_CACHE_EXE=$(which apt-cache)
 APT_GET_EXE=$(which apt-get)
+DATE_EXE=$(which date)
 
 ###############################################
 # Show usage and exit with code 1.
@@ -109,6 +115,8 @@ __usage() {
 	 "\t--reset-wifi-server\n" \
 	 "\t--list-available-versions\n" \
 	 "\t--install-version <package-version>\n" \
+	 "\t--get-host-date\n" \
+	 "\t--set-host-date <+%Y-%m-%dT%H:%M:%S%z>\n" \
 	 "\t--poweroff\n" \
 	 "\t--reboot\n" \
 	 "\t--verbose"
@@ -348,6 +356,26 @@ __install-version() {
 }
 
 ###############################################
+# Get date in format "+%Y-%m-%dT%H:%M:%S%z"
+###############################################
+__get-host-date() {
+
+    { echo $(date "+%Y-%m-%dT%H:%M:%S%z"); exit 0; }
+}
+
+###############################################
+# Set date in format "+%Y-%m-%dT%H:%M:%S%z"
+###############################################
+__set-host-date() {
+
+    [[ "$#" -ne 1 ]] && { __ALERT "wrong number of arguments"; }
+    ${DATE_EXE} -s "${1}" >/dev/null 2>&1
+    [[ $? -ne 0 ]] && { __ALERT "cannot set date ${1}"; }
+
+    __OK
+}
+
+###############################################
 # Parse arguments.
 ###############################################
 [[ $# -eq 0 ]] && __usage
@@ -385,7 +413,13 @@ do
 	--install-version)
 	    OPT_INSTALL_VERSION="${2}"
 	    shift
-	    OPT_INSTALL=1
+	    ;;
+	--get-host-date)
+	    OPT_GET_HOST_DATE=1
+	    ;;
+	--set-host-date)
+	    OPT_SET_HOST_DATE="${2}"
+	    shift
 	    ;;
 	--poweroff)
 	    OPT_POWEROFF=1
@@ -416,6 +450,7 @@ __check_file_exits ${SYSTEMCTL_EXE}
 __check_file_exits ${HOSTAPD_EXE}
 __check_file_exits ${APT_CACHE_EXE}
 __check_file_exits ${APT_GET_EXE}
+__check_file_exits ${DATE_EXE}
 # Config files.
 __check_file_exits ${CONF_HOSTAPD}
 __check_file_exits ${CONF_WPA_SUPPLICANT}
@@ -429,6 +464,8 @@ __create_reset_files
 [[ ${OPT_WIFI_CN_SET} -eq 1 ]] && { __set-wifi-client ${WIFI_CN_SSID} ${WIFI_CN_PW}; }
 [[ ${OPT_WIFI_AP_RESET} -eq 1 ]] && { __reset-wifi-server; }
 [[ ${OPT_LIST_AVAIL_VERSIONS} -eq 1 ]] && { __list-available-versions; }
-[[ ${OPT_INSTALL} -eq 1 ]] && { __install-version ${OPT_INSTALL_VERSION}; }
+[[ ! -z ${OPT_INSTALL_VERSION} ]] && { __install-version ${OPT_INSTALL_VERSION}; }
+[[ ${OPT_GET_HOST_DATE} -eq 1 ]] && { __get-host-date; }
+[[ ! -z ${OPT_SET_HOST_DATE} ]] && { __set-host-date ${OPT_SET_HOST_DATE}; }
 [[ ${OPT_POWEROFF} -eq 1 ]] && { ${POWEROFF_EXE}; }
 [[ ${OPT_REBOOT} -eq 1 ]] && { ${REBOOT_EXE}; }
