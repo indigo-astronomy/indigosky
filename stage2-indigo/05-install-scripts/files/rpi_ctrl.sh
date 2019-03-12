@@ -46,7 +46,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.15
+VERSION=0.16
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
@@ -71,6 +71,9 @@ OPT_GET_DATE=0
 
 # Set date.
 OPT_SET_DATE=""
+
+# Get wifi mode.
+OPT_GET_WIFI_MODE=0
 
 # Poweroff.
 OPT_POWEROFF=0
@@ -117,6 +120,7 @@ __usage() {
 	 "\t--install-version <package-version>\n" \
 	 "\t--get-date\n" \
 	 "\t--set-date <+%Y-%m-%dT%H:%M:%S%z>\n" \
+	 "\t--get-wifi-mode\n" \
 	 "\t--poweroff\n" \
 	 "\t--reboot\n" \
 	 "\t--verbose"
@@ -189,6 +193,19 @@ __set() {
 }
 
 ###############################################
+# Get active wifi-mode, returns "wifi-server"
+# or "wifi-client".
+###############################################
+__get-wifi-mode() {
+    # RPi is in wifi-client mode.
+    if ! ${GREP_EXE} -Eq "^interface wlan0|^static ip_address=192.168.235.1/24|^nohook wpa_supplicant" ${CONF_DHCPCD}; then
+	echo "wifi-client"
+    else
+	echo "wifi-server"
+    fi
+}
+
+###############################################
 # Set SSID and PW in conf file hostapd.conf.
 ###############################################
 __set-wifi-server() {
@@ -241,13 +258,21 @@ EOL
 ###############################################
 __get-wifi-server() {
 
+    local mode=$(__get-wifi-mode)
+
     WIFI_AP_SSID=$(__get "ssid" ${CONF_HOSTAPD})
     [[ -z ${WIFI_AP_SSID} ]] && __ALERT "'ssid' not found in ${CONF_HOSTAPD}"
 
     WIFI_AP_PW=$(__get "wpa_passphrase" ${CONF_HOSTAPD})
     [[ -z ${WIFI_AP_PW} ]] && __ALERT "'wpa_passphrase' not found in ${CONF_HOSTAPD}"
 
-    { echo "${WIFI_AP_SSID} ${WIFI_AP_PW}"; exit 0; }
+    if [[ ${OPT_VERBOSE} -eq 1 ]]; then
+	{ echo "${WIFI_AP_SSID} ${WIFI_AP_PW}"; exit 0; }
+    elif [[ "${mode}" == "wifi-server" ]]; then
+	{ echo "${WIFI_AP_SSID}"; exit 0; }
+    fi
+
+    exit 1;
 }
 
 ###############################################
@@ -301,6 +326,8 @@ EOL
 ###############################################
 __get-wifi-client() {
 
+    local mode=$(__get-wifi-mode)
+
     WIFI_CN_SSID=$(__get "ssid" ${CONF_WPA_SUPPLICANT})
     [[ -z ${WIFI_CN_SSID} ]] && __ALERT "'ssid' not found in ${CONF_WPA_SUPPLICANT}"
     WIFI_CN_SSID=$(echo ${WIFI_CN_SSID} | tr -d '"')
@@ -309,7 +336,13 @@ __get-wifi-client() {
     [[ -z ${WIFI_CN_PW} ]] && __ALERT "'psk' not found in ${CONF_WPA_SUPPLICANT}"
     WIFI_CN_PW=$(echo ${WIFI_CN_PW} | tr -d '"')
 
-    { echo "${WIFI_CN_SSID} ${WIFI_CN_PW}"; exit 0; }
+    if [[ ${OPT_VERBOSE} -eq 1 ]]; then
+	{ echo "${WIFI_CN_SSID} ${WIFI_CN_PW}"; exit 0; }
+    elif [[ "${mode}" == "wifi-client" ]]; then
+	{ echo "${WIFI_CN_SSID}"; exit 0; }
+    fi
+
+    exit 1;
 }
 
 ###############################################
@@ -318,8 +351,10 @@ __get-wifi-client() {
 ###############################################
 __reset-wifi-server() {
 
+    local mode=$(__get-wifi-mode)
+
     # RPi is in wifi-client mode and cannot connect to Internet via infrastructure access point.
-    if ! ${GREP_EXE} -Eq "^interface wlan0|^static ip_address=192.168.235.1/24|^nohook wpa_supplicant" ${CONF_DHCPCD}; then
+    if [[ "${mode}" == "wifi-client" ]]; then
 	# 8.8.8.8 = google-public-dns-a.google.com
 	if ! ping -i 1 -c 1 8.8.8.8; then
 	    # Copy back all orig files and restart in wifi-server mode.
@@ -421,6 +456,9 @@ do
 	    OPT_SET_DATE="${2}"
 	    shift
 	    ;;
+	--get-wifi-mode)
+	    OPT_GET_WIFI_MODE=1
+	    ;;
 	--poweroff)
 	    OPT_POWEROFF=1
 	    ;;
@@ -467,5 +505,6 @@ __create_reset_files
 [[ ! -z ${OPT_INSTALL_VERSION} ]] && { __install-version ${OPT_INSTALL_VERSION}; }
 [[ ${OPT_GET_DATE} -eq 1 ]] && { __get-date; }
 [[ ! -z ${OPT_SET_DATE} ]] && { __set-date ${OPT_SET_DATE}; }
+[[ ${OPT_GET_WIFI_MODE} -eq 1 ]] && { __get-wifi-mode; }
 [[ ${OPT_POWEROFF} -eq 1 ]] && { ${POWEROFF_EXE}; }
 [[ ${OPT_REBOOT} -eq 1 ]] && { ${REBOOT_EXE}; }
