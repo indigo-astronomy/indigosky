@@ -269,7 +269,7 @@ __get-wifi-server() {
     if [[ ${OPT_VERBOSE} -eq 1 ]]; then
 	{ echo "${WIFI_AP_SSID} ${WIFI_AP_PW}"; exit 0; }
     elif [[ "${mode}" == "wifi-server" ]]; then
-	{ echo "${WIFI_AP_SSID}"; exit 0; }
+	{ echo "${WIFI_AP_SSID} ${WIFI_AP_PW}"; exit 0; }
     fi
 
     exit 1;
