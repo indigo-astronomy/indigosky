@@ -39,6 +39,11 @@ EOL
 # net.ipv4.ip_forward=1
 # EOL
 
+cat >> "${ROOTFS_DIR}/etc/sysctl.conf" <<EOL
+net.core.somaxconn=2048
+net.ipv4.tcp_max_syn_backlog=512
+EOL
+
 # cat > "${ROOTFS_DIR}/etc/iptables.ipv4.nat" <<EOL
 # *nat
 # :PREROUTING ACCEPT [1:122]
