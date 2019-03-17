@@ -46,7 +46,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.17
+VERSION=0.18
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
@@ -250,7 +250,7 @@ EOL
 			    __ALERT "cannot append lines to ${CONF_DHCPCD}"; }
     fi
 
-    __OK
+    { echo "OK"; sleep 1; ${REBOOT_EXE}; }
 }
 
 ###############################################
@@ -317,7 +317,7 @@ EOL
 			    __ALERT "cannot remove 'nohook wpa_supplicant' in ${CONF_DHCPCD}"; }
     fi
 
-    __OK
+    { echo "OK"; sleep 1; ${REBOOT_EXE}; }
 }
 
 ###############################################
@@ -501,7 +501,7 @@ __create_reset_files
 [[ ${OPT_WIFI_CN_GET} -eq 1 ]] && { __get-wifi-client; }
 [[ ${OPT_WIFI_CN_SET} -eq 1 ]] && { __set-wifi-client ${WIFI_CN_SSID} ${WIFI_CN_PW}; }
 # __reset-wifi-server needs to be rewritten to be more robust and reliable.
-# [[ ${OPT_WIFI_AP_RESET} -eq 1 ]] && { __reset-wifi-server; }
+[[ ${OPT_WIFI_AP_RESET} -eq 1 ]] && { __reset-wifi-server; }
 [[ ${OPT_LIST_AVAIL_VERSIONS} -eq 1 ]] && { __list-available-versions; }
 [[ ! -z ${OPT_INSTALL_VERSION} ]] && { __install-version ${OPT_INSTALL_VERSION}; }
 [[ ${OPT_GET_DATE} -eq 1 ]] && { __get-date; }
