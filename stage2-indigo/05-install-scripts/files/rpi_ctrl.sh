@@ -353,10 +353,10 @@ __reset-wifi-server() {
 
     local mode=$(__get-wifi-mode)
 
-    # RPi is in wifi-client mode and cannot connect to Internet via infrastructure access point.
+    # RPi is in wifi-client mode.
     if [[ "${mode}" == "wifi-client" ]]; then
-	# 8.8.8.8 = google-public-dns-a.google.com
-	if ! ping -i 1 -c 1 8.8.8.8; then
+	# Network device wlan0 has no carrier, that is, not connected to infrastructure AP.
+	if [[ $(cat /sys/class/net/wlan0/carrier 2>/dev/null) -eq 0 ]]; then
 	    # Copy back all orig files and restart in wifi-server mode.
 	    ${CP_EXE} "${CONF_HOSTAPD}.orig" "${CONF_HOSTAPD}"
 	    ${CP_EXE} "${CONF_WPA_SUPPLICANT}.orig" "${CONF_WPA_SUPPLICANT}"
