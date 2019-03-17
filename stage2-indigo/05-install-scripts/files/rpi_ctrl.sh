@@ -46,7 +46,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.16
+VERSION=0.17
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
