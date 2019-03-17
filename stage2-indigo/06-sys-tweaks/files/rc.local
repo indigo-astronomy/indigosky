@@ -21,6 +21,6 @@ if grep -q "wlan0" /proc/net/dev; then
     iw wlan0 set power_save off
 fi
 
-# iptables-restore < /etc/iptables.ipv4.nat
+iptables-restore < /etc/iptables.ipv4.nat
 
 exit 0
