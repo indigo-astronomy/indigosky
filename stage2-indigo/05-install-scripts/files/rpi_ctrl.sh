@@ -46,7 +46,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.18
+VERSION=0.19
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
@@ -105,6 +105,7 @@ HOSTAPD_EXE=$(which hostapd)
 APT_CACHE_EXE=$(which apt-cache)
 APT_GET_EXE=$(which apt-get)
 DATE_EXE=$(which date)
+IW_EXE=$(which iw)
 
 ###############################################
 # Show usage and exit with code 1.
@@ -355,14 +356,17 @@ __reset-wifi-server() {
 
     # RPi is in wifi-client mode.
     if [[ "${mode}" == "wifi-client" ]]; then
-	# Network device wlan0 has no carrier, that is, not connected to infrastructure AP, and has no ethernet carrier.
-	if [[ $(cat /sys/class/net/wlan0/carrier 2>/dev/null) -eq 0 ]] && [[ $(cat /sys/class/net/eth0/carrier 2>/dev/null) -eq 0 ]]; then
-	    # Copy back all orig files and restart in wifi-server mode.
-	    ${CP_EXE} "${CONF_HOSTAPD}.orig" "${CONF_HOSTAPD}"
-	    ${CP_EXE} "${CONF_WPA_SUPPLICANT}.orig" "${CONF_WPA_SUPPLICANT}"
-	    ${CP_EXE} "${CONF_DHCPCD}.orig" "${CONF_DHCPCD}"
+	# Network device wlan0 is not connected to infrastructure AP.
+	if ${IW_EXE} wlan0 link | ${GREP_EXE} -q "^Not"; then
+	    # Ethernet link has no carrier.
+	    if [[ $(cat /sys/class/net/eth0/carrier 2>/dev/null) -eq 0 ]]; then
+		# Copy back all orig files and restart in wifi-server mode.
+		${CP_EXE} "${CONF_HOSTAPD}.orig" "${CONF_HOSTAPD}"
+		${CP_EXE} "${CONF_WPA_SUPPLICANT}.orig" "${CONF_WPA_SUPPLICANT}"
+		${CP_EXE} "${CONF_DHCPCD}.orig" "${CONF_DHCPCD}"
 
-	    ${REBOOT_EXE}
+		${REBOOT_EXE}
+	    fi
 	fi
     fi
 }
@@ -489,6 +493,7 @@ __check_file_exits ${HOSTAPD_EXE}
 __check_file_exits ${APT_CACHE_EXE}
 __check_file_exits ${APT_GET_EXE}
 __check_file_exits ${DATE_EXE}
+__check_file_exits ${IW_EXE}
 # Config files.
 __check_file_exits ${CONF_HOSTAPD}
 __check_file_exits ${CONF_WPA_SUPPLICANT}
@@ -500,7 +505,6 @@ __create_reset_files
 [[ ${OPT_WIFI_AP_SET} -eq 1 ]] && { __set-wifi-server ${WIFI_AP_SSID} ${WIFI_AP_PW}; }
 [[ ${OPT_WIFI_CN_GET} -eq 1 ]] && { __get-wifi-client; }
 [[ ${OPT_WIFI_CN_SET} -eq 1 ]] && { __set-wifi-client ${WIFI_CN_SSID} ${WIFI_CN_PW}; }
-# __reset-wifi-server needs to be rewritten to be more robust and reliable.
 [[ ${OPT_WIFI_AP_RESET} -eq 1 ]] && { __reset-wifi-server; }
 [[ ${OPT_LIST_AVAIL_VERSIONS} -eq 1 ]] && { __list-available-versions; }
 [[ ! -z ${OPT_INSTALL_VERSION} ]] && { __install-version ${OPT_INSTALL_VERSION}; }
