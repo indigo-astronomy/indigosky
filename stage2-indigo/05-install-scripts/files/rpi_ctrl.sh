@@ -500,7 +500,8 @@ __create_reset_files
 [[ ${OPT_WIFI_AP_SET} -eq 1 ]] && { __set-wifi-server ${WIFI_AP_SSID} ${WIFI_AP_PW}; }
 [[ ${OPT_WIFI_CN_GET} -eq 1 ]] && { __get-wifi-client; }
 [[ ${OPT_WIFI_CN_SET} -eq 1 ]] && { __set-wifi-client ${WIFI_CN_SSID} ${WIFI_CN_PW}; }
-[[ ${OPT_WIFI_AP_RESET} -eq 1 ]] && { __reset-wifi-server; }
+# __reset-wifi-server needs to be rewritten to be more robust and reliable.
+# [[ ${OPT_WIFI_AP_RESET} -eq 1 ]] && { __reset-wifi-server; }
 [[ ${OPT_LIST_AVAIL_VERSIONS} -eq 1 ]] && { __list-available-versions; }
 [[ ! -z ${OPT_INSTALL_VERSION} ]] && { __install-version ${OPT_INSTALL_VERSION}; }
 [[ ${OPT_GET_DATE} -eq 1 ]] && { __get-date; }
