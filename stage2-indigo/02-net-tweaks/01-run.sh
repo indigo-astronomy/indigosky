@@ -35,19 +35,19 @@ cat >> "${ROOTFS_DIR}/etc/default/hostapd" <<EOL
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 EOL
 
-cat >> "${ROOTFS_DIR}/etc/sysctl.conf" <<EOL
-net.ipv4.ip_forward=1
-EOL
+# cat >> "${ROOTFS_DIR}/etc/sysctl.conf" <<EOL
+# net.ipv4.ip_forward=1
+# EOL
 
-cat > "${ROOTFS_DIR}/etc/iptables.ipv4.nat" <<EOL
-*nat
-:PREROUTING ACCEPT [1:122]
-:INPUT ACCEPT [1:122]
-:OUTPUT ACCEPT [1:168]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -o eth0 -j MASQUERADE
-COMMIT
-EOL
+# cat > "${ROOTFS_DIR}/etc/iptables.ipv4.nat" <<EOL
+# *nat
+# :PREROUTING ACCEPT [1:122]
+# :INPUT ACCEPT [1:122]
+# :OUTPUT ACCEPT [1:168]
+# :POSTROUTING ACCEPT [0:0]
+# -A POSTROUTING -o eth0 -j MASQUERADE
+# COMMIT
+# EOL
 
 on_chroot << EOF
 systemctl enable hostapd
