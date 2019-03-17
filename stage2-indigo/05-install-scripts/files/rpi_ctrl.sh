@@ -355,8 +355,8 @@ __reset-wifi-server() {
 
     # RPi is in wifi-client mode.
     if [[ "${mode}" == "wifi-client" ]]; then
-	# Network device wlan0 has no carrier, that is, not connected to infrastructure AP.
-	if [[ $(cat /sys/class/net/wlan0/carrier 2>/dev/null) -eq 0 ]]; then
+	# Network device wlan0 has no carrier, that is, not connected to infrastructure AP, and has no ethernet carrier.
+	if [[ $(cat /sys/class/net/wlan0/carrier 2>/dev/null) -eq 0 ]] && [[ $(cat /sys/class/net/eth0/carrier 2>/dev/null) -eq 0 ]]; then
 	    # Copy back all orig files and restart in wifi-server mode.
 	    ${CP_EXE} "${CONF_HOSTAPD}.orig" "${CONF_HOSTAPD}"
 	    ${CP_EXE} "${CONF_WPA_SUPPLICANT}.orig" "${CONF_WPA_SUPPLICANT}"
