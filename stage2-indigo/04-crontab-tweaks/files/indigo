@@ -25,5 +25,4 @@
 # m h  dom mon dow   command
 SHELL=/bin/bash
 PATH=/usr/local/bin:/usr/local/sbin:/sbin:/usr/sbin:/bin:/usr/bin
-@reboot sleep 60 && sudo apt-get update > /dev/null 2>&1
 */30 * * * * s_rpi_ctrl.sh --reset-wifi-server > /dev/null 2>&1

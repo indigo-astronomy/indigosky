@@ -46,7 +46,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.19
+VERSION=0.20
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
@@ -378,6 +378,10 @@ __reset-wifi-server() {
 ###############################################
 __list-available-versions() {
 
+    # Make sure we have latest package indices (when Internet connectivity).
+    ${APT_GET_EXE} update >/dev/null 2>&1
+
+    # List current installed version and candidate version or older versions. In total 3 versions are listed.
     echo $(${APT_CACHE_EXE} policy indigo | ${GREP_EXE} -oPm1 "(?<=Installed:\s).*") \
 	 $(${APT_CACHE_EXE} policy indigo | ${GREP_EXE} -E -oe '\s\s[0-9]+.[0-9]+\-[0-9]+' | tr -d '[:blank:]' | head -n 2)
 }
