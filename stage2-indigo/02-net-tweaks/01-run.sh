@@ -11,7 +11,7 @@ EOL
 
 cat > "${ROOTFS_DIR}/etc/dnsmasq.conf" <<EOL
 interface=wlan0
-dhcp-range=192.168.235.2,192.168.235.20,255.255.255.0,24h
+dhcp-range=192.168.235.2,192.168.235.235,255.255.255.0,24h
 EOL
 
 cat > "${ROOTFS_DIR}/etc/hostapd/hostapd.conf" <<EOL
