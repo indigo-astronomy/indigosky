@@ -46,7 +46,7 @@
 # static ip_address=192.168.235.1/24
 # nohook wpa_supplicant
 
-VERSION=0.20
+VERSION=0.21
 
 # Setup RPi as access point server.
 WIFI_AP_SSID=""
@@ -251,7 +251,7 @@ EOL
 			    __ALERT "cannot append lines to ${CONF_DHCPCD}"; }
     fi
 
-    { echo "OK"; sleep 1; ${REBOOT_EXE}; }
+    { echo "OK"; sleep 1; ${SYSTEMCTL_EXE} enable hostapd; sleep 1; ${REBOOT_EXE}; }
 }
 
 ###############################################
@@ -318,7 +318,7 @@ EOL
 			    __ALERT "cannot remove 'nohook wpa_supplicant' in ${CONF_DHCPCD}"; }
     fi
 
-    { echo "OK"; sleep 1; ${REBOOT_EXE}; }
+    { echo "OK"; sleep 1; ${SYSTEMCTL_EXE} disable hostapd; sleep 1; ${REBOOT_EXE}; }
 }
 
 ###############################################
