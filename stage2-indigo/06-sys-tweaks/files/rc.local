@@ -23,4 +23,6 @@ fi
 
 iptables-restore < /etc/iptables.ipv4.nat
 
+truncate -s 0 /home/indigo/indigo.log
+
 exit 0
