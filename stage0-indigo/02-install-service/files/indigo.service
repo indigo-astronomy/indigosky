@@ -5,6 +5,8 @@ Description=Indigo server
 User=indigo
 PAMName=login
 ExecStart=/usr/bin/indigo_server --enable-rpi-management
+StandardOutput=file:/home/indigo/indigo.log
+StandardError=file:/home/indigo/indigo.log
 
 [Install]
 WantedBy=multi-user.target
