@@ -17,10 +17,16 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
+# Deactivate sleep mode of WLAN.
 if grep -q "wlan0" /proc/net/dev; then
     iw wlan0 set power_save off
 fi
 
 iptables-restore < /etc/iptables.ipv4.nat
+
+# Truncate INDIGO log file /home/indigo/indigo.log
+if [ -d /home/indigo ]; then
+    truncate -s 0 /home/indigo/indigo.log
+fi
 
 exit 0
