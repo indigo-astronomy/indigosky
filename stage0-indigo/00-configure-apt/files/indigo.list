@@ -1,2 +1,1 @@
 deb [trusted=yes] http://indigo-astronomy.org indigo main
-deb [trusted=yes] https://indigo-astronomy.github.io/indigo_ppa/ppa indigo main

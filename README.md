@@ -3,12 +3,10 @@ Generate INDIGO Raspberry PI Image
 
 Make sure you have installed required packages and docker as described in
 [pi-gen README.md](https://github.com/RPi-Distro/pi-gen/blob/master/README.md).
-Copy content of this repository into cloned repository [pi-gen](https://github.com/RPi-Distro/pi-gen)
-and  execute in the cloned *pi-gen* repository the command
 ```
-./build-docker.sh
+./build.sh
 ```
-The created image is named _*-indigo-lite.zip_ in directory _deploy_ and contains the following customization:
+The created image is named _*-indigo-lite.zip_ in directory _pi-gen-master/deploy_ and contains the following customization:
 
 0. Filesystem is expanded.
 1. User 'indigo' with password 'indigo' is created.
