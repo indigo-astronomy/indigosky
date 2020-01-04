@@ -5,4 +5,4 @@ WPA_ESSID='indigosky'
 WPA_PASSWORD='indigosky'
 WPA_COUNTRY='GB'
 ENABLE_SSH=1
-STAGE_LIST='stage0 stage0-indigo stage1 stage2 stage2-indigo'
+STAGE_LIST='stage0 stage1 stage2 indigosky'
