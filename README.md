@@ -1,4 +1,4 @@
-Generate INDIGO Raspberry PI Image
+Generate INDIGO Sky Raspberry PI Image
 ==============
 
 Make sure you have installed required packages and docker as described in
