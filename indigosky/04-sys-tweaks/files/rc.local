@@ -22,6 +22,9 @@ if grep -q "wlan0" /proc/net/dev; then
     iw wlan0 set power_save off
 fi
 
+# Unblock all rf devices
+rfkill unblock all
+
 # Ungly workaround: remove the apt cache so that apt will see new indigo versions
 rm /var/lib/apt/lists/indigo-astronomy.github.io_indigo%5fppa_ppa_dists_indigo_*
 
