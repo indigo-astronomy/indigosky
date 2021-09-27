@@ -6,7 +6,6 @@ fake-hwclock nfs-common usbutils
 dosfstools
 dphys-swapfile
 raspberrypi-sys-mods
-pi-bluetooth
 apt-listchanges
 usb-modeswitch
 libpam-chksshpwd
