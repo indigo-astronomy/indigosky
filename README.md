@@ -4,10 +4,16 @@ Generate INDIGO Sky Raspberry PI Image
 Make sure you have installed required packages and docker as described in
 [pi-gen README.md](https://github.com/RPi-Distro/pi-gen/blob/master/README.md).
 ```
-./build.sh
+./build_arm64.sh
 ```
-The created image is named _*-indigo-lite.zip_ in directory _pi-gen-master/deploy_ and contains the following customization:
+The created image is named <DATE>-indigosky-arm64.zip
 
+```
+./build_armhf.sh
+```
+The created image is named <DATE>-indigosky-armhf.zip
+
+Images contain several customizations:
 0. Filesystem is expanded.
 1. User 'indigo' with password 'indigo' is created.
 2. APT source list of INDIGO is added and latest INDIGO package is installed.
