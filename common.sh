@@ -2,11 +2,13 @@
 
 build_indigosky () {
 	# start clean
-	rm -rf ${work_dir}.zip ${work_dir} *-${arch}.zip
+	rm -rf ${work_dir} *-${arch}.zip
 
 	# get the code and build the image
-	curl -o ${work_dir}.zip -L ${src_repo}
-	unzip ${work_dir}.zip
+	git clone ${src_repo} ${work_dir}
+	cd ${work_dir}
+	git checkout ${used_commit}
+	cd ..
 	cp -Rf config indigosky stage2 ${work_dir}
 	docker rm -v pigen_work
 	cd ${work_dir}
