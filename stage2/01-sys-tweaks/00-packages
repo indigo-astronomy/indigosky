@@ -4,6 +4,7 @@ avahi-daemon
 hardlink ca-certificates curl
 fake-hwclock nfs-common usbutils
 dosfstools
+iptables
 dphys-swapfile
 raspberrypi-sys-mods
 apt-listchanges
@@ -17,7 +18,6 @@ policykit-1
 ssh-import-id
 rng-tools
 ethtool
-vl805fw
 ntfs-3g
 pciutils
 rpi-eeprom
