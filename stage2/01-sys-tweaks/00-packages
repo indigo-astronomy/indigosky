@@ -4,7 +4,6 @@ avahi-daemon
 hardlink ca-certificates curl
 fake-hwclock nfs-common usbutils
 dosfstools
-iptables
 dphys-swapfile
 raspberrypi-sys-mods
 apt-listchanges

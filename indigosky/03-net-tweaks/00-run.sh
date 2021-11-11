@@ -44,19 +44,39 @@ net.core.somaxconn=2048
 net.ipv4.tcp_max_syn_backlog=512
 EOL
 
-cat > "${ROOTFS_DIR}/etc/iptables.ipv4.nat" <<EOL
-*nat
-:PREROUTING ACCEPT [1:122]
-:INPUT ACCEPT [1:122]
-:OUTPUT ACCEPT [1:168]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -o eth0 -j MASQUERADE
-COMMIT
+cat > "${ROOTFS_DIR}/etc/nftables.conf" <<EOL
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table ip nat {
+	chain PREROUTING {
+		type nat hook prerouting priority dstnat; policy accept;
+	}
+
+	chain INPUT {
+		type nat hook input priority 100; policy accept;
+	}
+
+	chain OUTPUT {
+		type nat hook output priority -100; policy accept;
+	}
+
+	chain POSTROUTING {
+		type nat hook postrouting priority srcnat; policy accept;
+		oifname "eth0" counter packets 1208 bytes 387600 masquerade 
+	}
+}
 EOL
 
 on_chroot << EOF
 systemctl enable hostapd
 systemctl start hostapd
+EOF
+
+on_chroot << EOF
+systemctl enable nftables
+systemctl start nftables
 EOF
 
 on_chroot << EOF
