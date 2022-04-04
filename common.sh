@@ -2,7 +2,7 @@
 
 build_indigosky () {
 	# start clean
-	rm -rf ${work_dir} *-${arch}.zip
+	rm -rf ${work_dir} *-test-${arch}.zip
 
 	# get the code and build the image
 	git clone ${src_repo} ${work_dir}
