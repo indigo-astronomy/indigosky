@@ -28,8 +28,6 @@ rfkill unblock all
 # Ungly workaround: remove the apt cache so that apt will see new indigo versions
 rm /var/lib/apt/lists/indigo-astronomy.github.io_indigo%5fppa_ppa_dists_indigo_*
 
-iptables-restore < /etc/iptables.ipv4.nat
-
 # Truncate INDIGO log file /home/indigo/indigo.log
 if [ -d /home/indigo ]; then
     truncate -s 0 /home/indigo/indigo.log
