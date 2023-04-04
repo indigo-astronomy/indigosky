@@ -26,6 +26,7 @@ ieee80211n=1
 ieee80211ac=1
 wmm_enabled=1
 require_ht=1
+require_vht=1
 ht_capab=0
 macaddr_acl=0
 auth_algs=1
