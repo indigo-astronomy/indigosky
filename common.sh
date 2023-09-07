@@ -8,6 +8,7 @@ build_indigosky () {
 	git clone ${src_repo} ${work_dir}
 	cd ${work_dir}
 	git checkout ${used_commit}
+	rm -rf export-image/01-user-rename
 	sed -i 's@exit 1@mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc@g' scripts/dependencies_check
 	cd ..
 	cp -Rf config indigosky stage2 ${work_dir}
