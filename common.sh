@@ -11,7 +11,8 @@ build_indigosky () {
 	rm -rf export-image/01-user-rename
 	sed -i 's@exit 1@mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc@g' scripts/dependencies_check
 	cd ..
-	cp -Rf config indigosky stage2 ${work_dir}
+	cp -Rf config stage2 ${work_dir}
+	cp -Rf indigosky-${arch} ${work_dir}/indigosky
 	docker rm -v pigen_work
 	cd ${work_dir}
 	./build-docker.sh
