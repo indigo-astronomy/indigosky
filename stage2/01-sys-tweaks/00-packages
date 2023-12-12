@@ -1,7 +1,7 @@
 ssh less fbset sudo psmisc strace ed ncdu
 console-setup keyboard-configuration debconf-utils parted unzip
 avahi-daemon
-hardlink ca-certificates curl
+ca-certificates curl
 fake-hwclock nfs-common usbutils
 dosfstools
 dphys-swapfile
