@@ -4,6 +4,7 @@ install -m 644 files/hostname "${ROOTFS_DIR}/etc/hostname"
 install -m 644 files/hosts "${ROOTFS_DIR}/etc/hosts"
 install -m 600 files/indigo-wifi.nmconnection "${ROOTFS_DIR}/etc/NetworkManager/system-connections"
 install -m 644 files/NetworkManager.conf "${ROOTFS_DIR}/etc/NetworkManager"
+install -m 755 files/00-sysctl "${ROOTFS_DIR}/etc/NetworkManager/dispatcher.d"
 
 cat > "${ROOTFS_DIR}/etc/dnsmasq.conf" <<EOL
 interface=wlan0
@@ -45,8 +46,8 @@ table ip nat {
 EOL
 
 on_chroot << EOF
-systemctl disable nftables
-systemctl stop nftables
+systemctl enable nftables
+systemctl start nftables
 EOF
 
 on_chroot << EOF

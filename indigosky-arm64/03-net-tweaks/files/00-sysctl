@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/usr/sbin/sysctl --system
+
+exit 0
